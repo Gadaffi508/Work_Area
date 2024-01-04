@@ -9,10 +9,14 @@ Projeyi yerel makinenize klonlayın:
 ```bash
 git clone https://github.com/Gadaffi508/Work_Area.git
 
+```
+
 #Navmesh Agent
 
-https://github.com/Gadaffi508/Work_Area/assets/121219831/641cd97a-1738-4be3-8403-1636589fabdf
+![gt](https://github.com/Gadaffi508/Work_Area/assets/121219831/270d5bcc-d805-48ee-a829-10f757eb01d0)
+
 
 #Steam Start Scene
-https://github.com/Gadaffi508/Work_Area/assets/121219831/34a3130e-7169-4736-88c6-a4fe967cae5c
+![gt](https://github.com/Gadaffi508/Work_Area/assets/121219831/6c2f4912-6c68-4395-8811-f40864150ccd)
+
 
