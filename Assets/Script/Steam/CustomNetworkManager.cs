@@ -6,5 +6,7 @@ using Steamworks;
 
 public class CustomNetworkManager : NetworkManager
 {
-    
+    [SerializeField] private PlayerController Player;
+
+    public List<PlayerController> GamePlayer { get; } = new List<PlayerController> ();
 }
