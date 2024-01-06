@@ -16,6 +16,7 @@ public class PlayerController : NetworkBehaviour
         anim = GetComponent<Animator>();
     }
     
+    [ClientCallback]
     void Update()
     {
         anim.SetFloat("speed",_agent.velocity.magnitude);
@@ -25,6 +26,6 @@ public class PlayerController : NetworkBehaviour
             if (Physics.Raycast(MouseClick(), out hit)) _agent.SetDestination(hit.point);
         }
     }
-    
+    [ClientCallback]
     private Ray MouseClick() => Camera.main.ScreenPointToRay(Input.mousePosition);
 }
