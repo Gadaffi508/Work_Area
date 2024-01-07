@@ -10,6 +10,10 @@ Projeyi yerel makinenize klonlayın:
 git clone https://github.com/Gadaffi508/Work_Area.git
 
 ```
+#Host add and client connect
+
+![ss](https://github.com/Gadaffi508/Work_Area/assets/121219831/5bacf9d2-4da2-4c03-8539-8d8b08a02bf9)
+
 
 #Navmesh Agent
 
