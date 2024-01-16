@@ -42,7 +42,57 @@ public class CLobbyListManager : MonoBehaviour
     //Sonuçlar, coğrafi mesafeye göre sıralanan ve yakınındaki herhangi bir filtreye bağlı olarak döndürülür.
     //Varsayılan olarak tamamen dolu lobileri ve yakınlık ayarı k_ELobbyDistanceFilterDefault (civarında) ayarlanmış olanları döndürmeyeceğiz.
     //Bu filtreleri eklemek için RequestLobbyList'i çağırmadan önce bir veya birkaç filtreleme işlevini çağırmalısınız:
+    
+    //Bir dizgi karşılaştırma filtresi ekler.
+    void AddRequestLobbyListStringFilter(char pchKeyToMatch, char pchValueToMatch, ELobbyComparison eComparisonType )
+    {
+        //pchKeyToMatch: Bu parametre, karşılaştırma yapılacak dizginin anahtarıdır. Bu, bir oda özelliğinin adını veya etiketini temsil eder.
+        //pchValueToMatch: Bu, karşılaştırılacak dizginin değeridir. Örneğin, bir oda etiketi veya adı.
+        //eComparisonType: Bu parametre, karşılaştırma türünü belirler. Örneğin, eşit olma, içermeyen, eksiksiz eşleşme gibi.
+        // Dizgi filtresi ekle
+        SteamMatchmaking.AddRequestLobbyListStringFilter("gameMode", "CaptureTheFlag", ELobbyComparison.k_ELobbyComparisonEqual);
+    }
+    
+    //Bir sayısal karşılaştırma filtresi ekler.
+    void AddRequestLobbyListNumericalFilter(char pchKeyToMatch, int nValueToMatch, ELobbyComparison eComparisonType )
+    {
+        //pchKeyToMatch: Karşılaştırma yapılacak sayısal özelliğin anahtarı.
+        //nValueToMatch: Karşılaştırılacak sayısal değer.
+        //eComparisonType: Karşılaştırma türü, örneğin, eşit olma, büyük olma, küçük olma gibi.
+        // Sayısal filtresi ekle
+        SteamMatchmaking.AddRequestLobbyListNumericalFilter("playerCount", 4, ELobbyComparison.k_ELobbyComparisonEqual);
+    }
+    
+    //Sonuçları, belirtilen değere en yakın şekilde sıralar.
+    void AddRequestLobbyListNearValueFilter(char pchKeyToMatch, int nValueToBeCloseTo )
+    {
+        // pchKeyToMatch: Eşleşecek filtre anahtarı adı. Bu, k_nMaxLobbyKeyLength'ten daha uzun olamaz.
+        //nValueToBeCloseTo : Lobilerin sıralanacağı değer.
+        SteamMatchmaking.AddRequestLobbyListNearValueFilter("A",1);
+    }
 
+    // Sadece belirli sayıda katılmaya yer olan sayıdaki lobilerin dönüşünü filtreler.
+    void AddRequestLobbyListFilterSlotsAvailable(int nSlotsAvailable)
+    {
+        //nSlotsAvailable : Açık olması gereken açık slot sayısı.
+        SteamMatchmaking.AddRequestLobbyListFilterSlotsAvailable(2);
+        //Yalnızca belirtilen sayıda açık yuvaya sahip lobileri geri döndürecek şekilde filtreler.
+    }
+
+    //Hangi lobiyi arayacağımızı fiziksel mesafeye göre belirler. Bu, Steam arka ucundaki kullanıcının IP adresine ve IP konum haritasına göre belirlenir.
+    void AddRequestLobbyListDistanceFilter(ELobbyDistanceFilter eLobbyDistanceFilter)
+    {
+        SteamMatchmaking.AddRequestLobbyListDistanceFilter(ELobbyDistanceFilter.k_ELobbyDistanceFilterClose);
+        //Lobileri aramamız gereken fiziksel mesafeyi ayarlar; bu, kullanıcının IP adresine ve Steam destekli IP konum haritasına bağlıdır
+    }
+
+    // Döndürülecek maksimum sayıdaki lobiyi belirtir. Bu sayının az olması lobi arama sonuçlarını ve istemciye detaylarını daha hızlı işler.
+    void AddRequestLobbyListResultCountFilter(int cMaxResults)
+    {
+        SteamMatchmaking.AddRequestLobbyListResultCountFilter(1);
+        //Geri dönecek maksimum lobi sayısını ayarlar. Sayı ne kadar düşük olursa, lobi sonuçlarının ve ayrıntılarının müşteriye indirilmesi o kadar hızlı olur.
+    }
+    
     // Lobi eşleşme listesi alındığında çağrılan fonksiyon
     private static void OnLobbyMatchList(LobbyMatchList_t pLobbyMatchList, bool bIOFailure)
     {
@@ -53,5 +103,44 @@ public class CLobbyListManager : MonoBehaviour
                   + pLobbyMatchList.m_nLobbiesMatching);
         Debug.Log("bIOFailure : "
                   + bIOFailure);
+    }
+
+    //Lobi oluşturmak
+    public void CreateLobby()
+    {
+        //ELobbyType Bu lobinin türü ve görünürlüğü. Bu daha sonra SetLobbyType aracılığıyla değiştirilebilir.
+        //cMaxMembers Bu lobiye katılabilecek maksimum oyuncu sayısı. Bu 250'nin üzerinde olamaz.
+        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic,2);
+        Debug.Log("Lobby Created");
+    }
+    
+    //Lobiye katılma
+    public void EnterLobby(CSteamID _steamIDLobby)
+    {
+        //Mevcut bir lobiye katılır.
+        //Lobi Steam Kimliği, requestLobbyList ile arama yaparak, bir arkadaşınıza katılarak veya davet yoluyla elde edilebilir.
+        SteamMatchmaking.JoinLobby(_steamIDLobby );
+        //Hangi kullanıcının lobide olduğunu yinelemek için
+        SteamMatchmaking.GetNumLobbyMembers(_steamIDLobby);
+        //Bu, GetNumLobbyMembers'a yapılan önceki çağrıda kullanılan lobinin aynısı OLMALIDIR!
+        //0 ile GetNumLobbyMembers arasında bir dizin.
+        SteamMatchmaking.GetLobbyMemberByIndex(_steamIDLobby,1);
+    }
+    
+    //Lobiyle iletişim kurma
+    
+    public void UserFriendsLobbies()
+    {
+        //Bir kullanıcının arkadaşlarının yer aldığı bütün lobileri arkadaşlar API'ını kullanarak bulabilirsiniz:
+        int cFriends = SteamFriends.GetFriendCount( EFriendFlags.k_EFriendFlagAll );
+        for ( int i = 0; i < cFriends; i++ )
+        {
+            FriendGameInfo_t friendGameInfo;
+            CSteamID steamIDFriend = SteamFriends.GetFriendByIndex( i, EFriendFlags.k_EFriendFlagAll );
+            if ( SteamFriends.GetFriendGamePlayed( steamIDFriend, out friendGameInfo ) && friendGameInfo.m_steamIDLobby.IsValid() )
+            {
+                // friendGameInfo.m_steamIDLobby geçerli bir lobidir, buna katılabilir ya da RequestLobbyData() kullanarak üstverisini alabilirsiniz
+            }
+        }
     }
 }

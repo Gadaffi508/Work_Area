@@ -15,7 +15,7 @@ public class TNetcodeUI : MonoBehaviour
 
     private void Awake()
     {
-        StartHost.onClick.AddListener( () =>
+        /*StartHost.onClick.AddListener( () =>
             {
                 NetworkManager.Singleton.StartHost();
                 UıButtons.SetActive(false);
@@ -29,6 +29,6 @@ public class TNetcodeUI : MonoBehaviour
         QuıtButtons.onClick.AddListener( () =>
         {
             Application.Quit();
-        });
+        });*/
     }
 }
