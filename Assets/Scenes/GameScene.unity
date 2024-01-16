@@ -254,26 +254,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 491935231}
-  - component: {fileID: 491935230}
+  - component: {fileID: 491935232}
   m_Layer: 0
-  m_Name: CLobbyListManager
+  m_Name: SteamLearnWork
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &491935230
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 491935229}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 080bbe6ba7798684b9bf7fe972da96dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_IsActive: 0
 --- !u!4 &491935231
 Transform:
   m_ObjectHideFlags: 0
@@ -289,6 +277,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &491935232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 491935229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85d214c4fe8b41b40893b66e68c68b06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &523524635
 GameObject:
   m_ObjectHideFlags: 0
@@ -815,7 +815,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 491935230}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: CLobbyListManager, Assembly-CSharp
         m_MethodName: CreateLobby
         m_Mode: 1

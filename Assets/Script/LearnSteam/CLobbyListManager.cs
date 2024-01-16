@@ -247,4 +247,52 @@ public class CLobbyListManager : MonoBehaviour
         SteamMatchmaking.SetLobbyMemberData(steamIDLobby,"A","B");
         
     }
+    
+    //Lobi de mesajlaşma
+    //mesaj gönderme
+    public void SendLobbyChatMsg(CSteamID steamIDLobby, byte[] pvMsgBody, int cubMsgBody)
+    {
+        //pvMsgBody const void * Bu, boyutu 4 Kilobayta kadar olan metin veya ikili veri olabilir.
+        //cubMsgBody int pvMsgBody'nin bayt cinsinden boyutu; eğer bu bir metin mesajıysa, boş sonlandırıcıyı dahil etmek için bu strlen(text) + 1 olmalıdır.
+        SteamMatchmaking.SendLobbyChatMsg(steamIDLobby,pvMsgBody,1);
+        //Lobideki tüm kullanıcılara bir sohbet (metin veya ikili veri) mesajı yayınlar. Lobideki tüm kullanıcılar (yerel kullanıcı dahil) mesajla birlikte bir LobbyChatMsg_t geri araması alacaktır.
+        //İkili veri gönderiyorsanız, mesajın önüne bir başlık eklemelisiniz, böylece onu düz eski bir metin mesajı yerine özel verileriniz olarak değerlendirebilirsiniz.
+        //Tahkim edilmesi gereken iletişim için (örneğin, bir kullanıcının bir dizi karakter arasından seçim yapmasını sağlamak ve yalnızca bir kullanıcının bir karakter seçtiğinden emin olmak),
+        //Lobi sahibini karar verici olarak kullanabilirsiniz. GetLobbyOwner geçerli lobi sahibini döndürür. Her zaman tek ve tek bir lobi üyesinin sahibi olacağı garanti edilir
+        //Yani bir karakter seçme senaryosunda, bir karakter seçen kullanıcı 'Zoe olmak istiyorum' ikili mesajını gönderecek,
+        //lobi sahibi bu mesajı görecek, uygun olup olmadığına bakacak ve uygun sonucu yayınlayacaktır ( X kullanıcısı Zoe'dir).
+        //Bu mesajlar Steam'in arka ucu aracılığıyla gönderilir ve dolayısıyla mevcut bant genişliği sınırlıdır.
+        //Ses veya oyun verileri gibi daha yüksek hacimli trafik için Steam Ağ İletişimi API'sini kullanmak isteyeceksiniz.
+        //Return bool LobbyChatMsg_t geri aramasını tetikler. ileti başarıyla gönderildiyse doğru. mesaj çok küçük veya çok büyükse veya Steam ile bağlantı kurulamıyorsa false.
+    }
+    //mesaj alma
+    public void GetLobbyChatEntry(CSteamID steamIDLobby, int iChatID, CSteamID pSteamIDUser, byte[] pvData, int cubData, EChatEntryType peChatEntryType)
+    {
+        //steamIDLobby CSteamID Sohbet girişinin alınacağı lobinin Steam Kimliği. Bu hemen hemen her zaman LobbyChatMsg_t::m_ulSteamIDUser olmalıdır.
+        //iChatID int Lobideki sohbet girişinin dizini. Bu neredeyse her zaman LobbyChatMsg_t::m_iChatID olmalıdır.
+        //pSteamIDUser CSteamID * Ayarlanırsa bu, bu mesajı gönderen kullanıcının Steam ID'sini döndürür. LobbyChatMsg_t::m_ulSteamIDUser ile aynı olacağından genellikle gereksizdir
+        //pvData void * Mesaj verilerini bu ara belleğe kopyalayarak döndürür. Bu arabellek en fazla 4 Kilobayt olmalıdır.
+        //cubData int pvData için ayrılan arabelleğin boyutu.
+        //peChatEntryType EChatEntryType * Ayarlanırsa bu her zaman k_EChatEntryTypeChatMsg değerini döndürür. Bu genellikle NULL olarak ayarlanabilir.
+        SteamMatchmaking.GetLobbyChatEntry(steamIDLobby,1,out pSteamIDUser,pvData,1,out peChatEntryType);
+        //LobbyChatMsg_t geri araması aldıktan sonra lobi sohbet mesajından verileri alır. Döndürür: int pvData'ya kopyalanan bayt sayısı.
+    }
+
+    //arkadaş çağırma
+    public void InviteUserToLobby(CSteamID steamIDLobby, CSteamID steamIDInvitee)
+    {
+        //steamIDLobby CSteamID Kullanıcının davet edileceği lobinin Steam Kimliği.
+        //steamIDInvitee CSteamID Davet edilecek kişinin Steam ID'si.
+        SteamMatchmaking.InviteUserToLobby(steamIDLobby,steamIDInvitee);
+        //Belirtilen kullanıcı katılma bağlantısını tıklarsa, kullanıcı oyundaysa GameLobbyJoinRequested_t geri çağrısı gönderilecektir.
+        //veya oyun henüz çalışmıyorsa oyun komut satırı parametresiyle otomatik olarak başlatılacaktır.
+        //+connect_lobby <64-bit lobby Steam ID> instead.
+        //Return: bool davet başarıyla gönderildiyse true; aksi takdirde, yerel kullanıcı lobide değilse, Steam ile bağlantı kurulamıyorsa veya belirtilen kullanıcı geçersizse false olur.
+    }
+    
+    //Oyuncuları lobiden ayırma
+    public void LeaveLobby(CSteamID steamIDLobby)
+    {
+        SteamMatchmaking.LeaveLobby(steamIDLobby);
+    }
 }
