@@ -143,4 +143,108 @@ public class CLobbyListManager : MonoBehaviour
             }
         }
     }
+    
+    //Lobi veri alma(Arkadaşının ise)
+    public void RequestLobbyData(CSteamID steamIDLobby )
+    {
+        //Şu anda içinde olmadığınız bir lobinin tüm meta verilerini yeniler.
+        //Üyesi olduğunuz lobiler için bunu asla yapmayacaksınız, o veriler her zaman güncel olacaktır.
+        //Bunu, requestLobbyList'ten edindiğiniz veya arkadaşlarınız aracılığıyla erişilebilen lobileri yenilemek için kullanabilirsiniz.
+        //Return: bool LobbyDataUpdate_t geri çağrısını tetikler. istek sunucuya başarıyla gönderildiyse true. Steam ile bağlantı kurulamadıysa veya steamIDLobby geçersizse false.
+        //Belirtilen lobi yoksa LobbyDataUpdate_t::m_bSuccess false olarak ayarlanacaktır.
+        SteamMatchmaking.RequestLobbyData(steamIDLobby);
+    }
+
+    //Lobi Sahibi Yapabileceği şeyler
+    public void SetLobbyData(CSteamID steamIDLobby)
+    {
+        //steamIDLobby CSteamID Meta verinin ayarlanacağı lobinin Steam Kimliği.
+        //pchKey const char * Verilerin ayarlanacağı anahtar. Bu, k_nMaxLobbyKeyLength'ten daha uzun olamaz.
+        //pchValue const char * Ayarlanacak değer. Bu k_cubChatMetadataMax'tan daha uzun olamaz.
+        SteamMatchmaking.SetLobbyData(steamIDLobby,"pchKey","pchValue");
+        //Lobi meta verilerinde bir anahtar/değer çifti ayarlar. Bu, lobi adını, mevcut haritayı, oyun modunu vb. ayarlamak için kullanılabilir.
+        //Bu yalnızca lobinin sahibi tarafından ayarlanabilir. Lobi üyeleri bunun yerine SetLobbyMemberData'yı kullanmalıdır.
+        //Lobideki her kullanıcı, LobbyDataUpdate_t geri araması aracılığıyla lobi veri değişikliğine ilişkin bildirim alacaktır ve katılan tüm yeni kullanıcılar, mevcut tüm verileri alacaktır.
+        //Bu, yalnızca değişiklik olması durumunda verileri gönderir. Verilerin gönderilmesinden önce hafif bir gecikme olur,
+        //böylece ihtiyaç duyduğunuz tüm verileri ayarlamak için bunu tekrar tekrar arayabilirsiniz ve veriler otomatik olarak toplanıp son sıralı çağrıdan sonra gönderilir.
+        //Return: bool veriler başarıyla ayarlandıysa true. steamIDLobby geçersizse veya anahtar/değer çok uzunsa false.
+    }
+    
+    public void GetLobbyData(CSteamID steamIDLobby)
+    {
+        //steamIDLobby CSteamID Meta verilerin alınacağı lobinin Steam Kimliği.
+        //pchKey const char * Değerinin alınacağı anahtar
+        SteamMatchmaking.GetLobbyData(steamIDLobby,"pchKey");
+        //Belirtilen anahtarla ilişkili meta verileri belirtilen lobiden alır.
+        //NOT: Bu, yalnızca LobbyMatchList_t'den lobilerin bir listesini aldıktan, verileri requestLobbyData ile aldıktan sonra veya
+        //bir lobiye katıldıktan sonra müşterinin bildiği lobilerden meta veriler alabilir.
+        //Döndürür: const char * Bu anahtar için herhangi bir değer ayarlanmamışsa veya steamIDLobby geçersizse boş bir dize ("") döndürür.
+    }
+
+    public void DeleteLobbyData(CSteamID steamIDLobby)
+    {
+        SteamMatchmaking.DeleteLobbyData(steamIDLobby,"pchKey");
+        //Lobiden bir meta veri anahtarını kaldırır.
+        //Bu sadece lobinin sahibi tarafından yapılabilir
+        //Bu, yalnızca anahtarın mevcut olması durumunda verileri gönderir. Verilerin gönderilmesinden önce hafif bir gecikme olur,
+        //böylece ihtiyaç duyduğunuz tüm verileri ayarlamak için bunu tekrar tekrar arayabilirsiniz ve veriler otomatik olarak toplanıp son sıralı çağrıdan sonra gönderilir.
+        //Return: bool anahtar/değer başarıyla silindiyse true; aksi halde, steamIDLobby veya pchKey geçersizse false.
+    }
+    
+    //lobi sahibi düzenleme yaparken hata ayıklama 
+    public void GetLobbyDataCount(CSteamID steamIDLobby)
+    {
+        SteamMatchmaking.GetLobbyDataCount(steamIDLobby);
+        //Bu, yalnızca LobbyMatchList_t'den lobilerin bir listesini aldıktan,
+        //verileri requestLobbyData ile aldıktan sonra veya bir lobiye katıldıktan sonra müşterinin bildiği lobilerden meta veriler alabilir.
+        //Bu yineleme için kullanılır, bunu çağırdıktan sonra GetLobbyDataByIndex her meta veri parçasının anahtar/değer çiftini almak için kullanılabilir.
+        //Bu genellikle yalnızca hata ayıklama amacıyla kullanılmalıdır.
+        //Döndürür: int steamIDLobby geçersizse 0 değerini döndürür.
+    }
+    //Example
+    void ListLobbyData( CSteamID lobbyID )
+    {
+        int nData = SteamMatchmaking.GetLobbyDataCount( lobbyID );
+        char key;
+        char value;
+        for( int i = 0; i < nData; ++i )
+        {
+            //bool bSuccess = SteamMatchmaking.GetLobbyDataByIndex( lobbyID, i, key, k_nMaxLobbyKeyLength, value, k_cubChatMetadataMax );
+            if (true )//(bSuccess )
+            {
+                //print( "Lobby Data %d, Key: \"%s\" - Value: \"%s\"\n", i, key, value );
+            }
+        }
+    }
+
+    public void GetLobbyDataByIndex(CSteamID steamIDLobby,string phckeys,string phcvalues)
+    {
+        //iLobbyData int 0 ile GetLobbyDataCount arasında bir dizin.
+        //cchValueBufferSize int pchValue için ayrılan arabelleğin boyutu. Bu genellikle k_cubChatMetadataMax olmalıdır.
+        SteamMatchmaking.GetLobbyDataByIndex(steamIDLobby,1,out phckeys,1,out phcvalues,1);
+        //Dizine göre bir lobi meta veri anahtar/değer çifti alır.
+        //NOT: Bunu çağırmadan önce GetLobbyDataCount'u aramalısınız.
+        //Return: bool başarı üzerine doğru; aksi halde, steamIDLobby veya iLobbyData geçersizse false.
+    }
+    
+    //Lobideki üyelerin güncellemeleri alabilecekleri kendi meta verilerini ayarlamasına da imkân tanıma
+    public void GetLobbyMemberData(CSteamID steamIDLobby, CSteamID steamIDUser, char pchKey )
+    {
+        //steamIDLobby CSteamID Diğer oyuncunun bulunduğu lobinin Steam ID'si.
+        //steamIDUser CSteamID Meta verinin alınacağı oyuncunun Steam Kimliği.
+        //pchKey const char * Değerinin alınacağı anahtar.
+        SteamMatchmaking.GetLobbyMemberData(steamIDLobby,steamIDUser,"A");
+        //Belirtilen lobideki başka bir oynatıcıdan kullanıcı başına meta verileri alır.
+        //Bu yalnızca şu anda bulunduğunuz lobilerdeki üyelerden sorgulanabilir.
+        //Döndürür: const char * steamIDLobby geçersizse veya steamIDUser lobide değilse NULL değerini döndürür.
+        //Oynatıcı için pchKey ayarlanmamışsa boş bir dize ("") döndürür. Ayrıca Bakınız: SetLobbyMemberData
+    }
+
+    public void SetLobbyMemberData(CSteamID steamIDLobby, char pchKey)
+    {
+        //Yerel kullanıcı için kullanıcı başına meta verileri ayarlar. Lobideki her kullanıcı,
+        //LobbyDataUpdate_t geri araması aracılığıyla lobi veri değişikliğine ilişkin bildirim alacaktır ve katılan tüm yeni kullanıcılar, mevcut tüm verileri alacaktır.
+        SteamMatchmaking.SetLobbyMemberData(steamIDLobby,"A","B");
+        
+    }
 }
