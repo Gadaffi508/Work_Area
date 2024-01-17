@@ -5,131 +5,153 @@ using UnityEngine;
 using Mirror;
 using Steamworks;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class SteamLobby : MonoBehaviour
 {
-    public CSteamID SteamNumber;
-    //Calbacks
+    //Callbacks bunlar steam ile haberleşmesini sağlar
+    //protected ile koruyoruz
+    //lobi oluşturma parametresi veriyoruz
     protected Callback<LobbyCreated_t> LobbyCreated;
-    protected Callback<GameLobbyJoinRequested_t> joinRequest;
+    //Oyun lobisine katılma isteği
+    protected Callback<GameLobbyJoinRequested_t> JoinRequest;
+    //Oyun Lobisine girme
     protected Callback<LobbyEnter_t> LobbyEntered;
-
-    //variable
+    
+    //Lobi oluştuğunda bir kimlik oluşcak
+    //Bu ıd arkadaşlar katılma için kullancaz
     public ulong CurrentLobbyID;
+    //ana bilgisayar adres anahtarı
     private const string HostAddressKey = "HostAddress";
-    private CustomNetworkManager manager;
-
-    //Gameobject
+    //ağ yöneticisine atıfta bulunmak
+    private CustomNetworkManager cmanager;
+    
+    //Oyun Nesnesi
     public GameObject HostButton;
     public Text LobbyNameText;
-    
-    public static CSteamID LobbyID { get; private set; }
-
-    public InputField field;
 
     private void Start()
     {
-        manager = GetComponent<CustomNetworkManager>();
-        
-        if (!SteamManager.Initialized) return;
+        //Steamın çalışıp çalışmadığını kontrol ediyoruz
+        if(!SteamManager.Initialized) return;
 
+        cmanager = GetComponent<CustomNetworkManager>();
+        
+        //calback ları çalıştırma
         LobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
-        joinRequest = Callback<GameLobbyJoinRequested_t>.Create(OnJoinRequest);
+        JoinRequest = Callback<GameLobbyJoinRequested_t>.Create(OnJoinRequest);
         LobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
     }
 
-    public void HostLobby()
-    {
-        HostButton.SetActive(false);    
-        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, manager.maxConnections);
-    }
-
+    //Lobi Oluşturma
     private void OnLobbyCreated(LobbyCreated_t callback)
     {
-        if (callback.m_eResult != EResult.k_EResultOK) return;
-
-        Debug.Log("Lobby Created Successfully");
-
-        LobbyID = new CSteamID(callback.m_ulSteamIDLobby);
-
-        manager.StartHost();
-
-        // Set lobby data including the host address
-        SteamMatchmaking.SetLobbyData(LobbyID, HostAddressKey, SteamUser.GetSteamID().ToString());
-        SteamMatchmaking.SetLobbyData(LobbyID, "name", SteamFriends.GetPersonaName().ToString() + "'S LOBBY");
-
-        // Add the following line to set the host address in lobby data
-        string hostAddress = SteamUser.GetSteamID().ToString();
-        SteamMatchmaking.SetLobbyData(LobbyID, HostAddressKey, hostAddress);
-
-        Debug.Log("Host address set in lobby data: " + hostAddress);
-    }
-
-    private void OnJoinRequest(GameLobbyJoinRequested_t callback)
-    {
-        Debug.Log("Request To join  Lobby");
-
-        SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
+        //ilk önce lobi düzgün oluştumu kontrol ediyoruz
+        if(callback.m_eResult != EResult.k_EResultOK) return;
+        
+        Debug.Log("Lobby Created Succesfully");
+        
+        //başlangıç sunucusunu çağırıyoruz
+        cmanager.StartHost();
+        //oyunun barındırılmasını başlatcak ve callback lar
+        
+        //lobi verilerini ayarlıcaz bu yüzden lobi verileri üzerinde setlobbydata yapıyoruz
+        SteamMatchmaking.SetLobbyData(
+            //steam lobi id si
+            //direk m_ulSteamIDLobby bunu yazabiliriz ama çevirmemiz lazım onun için new yapıyoruz
+            new CSteamID(callback.m_ulSteamIDLobby),
+            //buraya değiştirmek istedğimiz verileri yazıyoruz
+            //ana bilgisayarı değiştir diyoruz
+            HostAddressKey,
+            //Ney ile değiştircemizi de buraya yazıyoruz
+            //steam kullanıcı kimlik yap diyoruz
+            //ve bunu to string yapıyoruz
+            SteamUser.GetSteamID().ToString()
+            );
+        
+        //Lobi adı
+        SteamMatchmaking.SetLobbyData(
+            //tekrar dönüştürüyoruz
+            new CSteamID(callback.m_ulSteamIDLobby),
+            //değiştircemiz şeyi yazıyoruz
+            "name",
+            //oyuncunun adı yapıyoruz
+            SteamFriends.GetPersonaName().ToString() + " 's LOBBY"
+            );
     }
     
-    public void JoinLobby(ulong lobbyId)
+    //Lobiye Katılma İsteği
+    private void OnJoinRequest(GameLobbyJoinRequested_t callback)
     {
-        SteamMatchmaking.JoinLobby(new CSteamID(lobbyId));
-    }
+        //Debug ile katılma isteğini yazdırıyoruz
+        Debug.Log("Request To Join Lobyy");
 
-    // Add the following method to be called when a button for joining a lobby is clicked, for example
-    public void JoinButtonClicked()
-    {
-        string lobbyIdToJoinString = field.text;
-
-        // Check if the entered lobby ID is a valid ulong
-        if (ulong.TryParse(lobbyIdToJoinString, out ulong lobbyIdToJoin))
-        {
-            JoinLobby(lobbyIdToJoin);
-        }
-        else
-        {
-            Debug.LogError("Invalid lobby ID entered. Please enter a valid number.");
-        }
+        //lobiye katılma isteme
+        //katılacağı lobi id sini parametre veriyoruz
+        SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
     }
 
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
-        if (NetworkServer.active) return;
+        //herkes için yapılması olan, lobi sahibide olsa da dahil
+        //Oyuna girerken yapılcaklar
         HostButton.SetActive(false);
+        
+        //lobi id sini girdiğimiz lobi id sine eşitliyoruz
         CurrentLobbyID = callback.m_ulSteamIDLobby;
+        //lobi adı görmek içim
         LobbyNameText.gameObject.SetActive(true);
-
-        LobbyNameText.text = SteamMatchmaking.GetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), "name");
-
-        //manager.networkAddress = SteamMatchmaking.GetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), HostAddressKey);
+        //lobinin adını getiriyoruz
+        LobbyNameText.text = SteamMatchmaking.GetLobbyData(
+            new CSteamID(callback.m_ulSteamIDLobby ),
+            "name"
+            );
         
-        CSteamID hostID = SteamUser.GetSteamID();
+        //Müşteriler için yapılması olan
+        //önce müşteri olup olmadığını kontrol edelim
+        //ağ sunucusunu aktif hale getiriyoruz
+        if(NetworkServer.active) return;
         
-        if (hostID.IsValid())
-        {
-            string hostAddress = hostID.ToString();
-        
-            if (!string.IsNullOrEmpty(hostAddress))
-            {
-                manager.networkAddress = hostAddress;
-                manager.StartClient();
-            }
-            else
-            {
-                Debug.LogError("Host address is empty or null. Cannot start client.");
-            }
-        }
-        else
-        {
-            Debug.LogError("Invalid host ID. Cannot start client.");
-        }
-
+        //ağ yöneticisinin adresini ayarlamak
+        cmanager.networkAddress = SteamMatchmaking.GetLobbyData(
+            new CSteamID(callback.m_ulSteamIDLobby ),
+            HostAddressKey
+            );
+        //işlemciyi başlatıyoruz
+        cmanager.StartClient();
     }
-
-    public void ConnectServer()
+    
+    //Buton için
+    public void HostLobby()
     {
-        
+        //lobimize ev sahipliği yapıyoruz
+        //İlk önce lobi türü daha sonra max insan sayısı
+        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, 4);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
