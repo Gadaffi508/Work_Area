@@ -8,6 +8,9 @@ using UnityEngine.UI;
 
 public class SteamLobby : MonoBehaviour
 {
+    //Referans vermek için
+    public static SteamLobby Instance;
+    
     //Callbacks bunlar steam ile haberleşmesini sağlar
     //protected ile koruyoruz
     //lobi oluşturma parametresi veriyoruz
@@ -25,15 +28,14 @@ public class SteamLobby : MonoBehaviour
     //ağ yöneticisine atıfta bulunmak
     private CustomNetworkManager cmanager;
     
-    //Oyun Nesnesi
-    public GameObject HostButton;
-    public Text LobbyNameText;
 
     private void Start()
     {
         //Steamın çalışıp çalışmadığını kontrol ediyoruz
         if(!SteamManager.Initialized) return;
 
+        if (Instance == null) Instance = this;
+        
         cmanager = GetComponent<CustomNetworkManager>();
         
         //calback ları çalıştırma
@@ -94,17 +96,17 @@ public class SteamLobby : MonoBehaviour
     {
         //herkes için yapılması olan, lobi sahibide olsa da dahil
         //Oyuna girerken yapılcaklar
-        HostButton.SetActive(false);
+        //HostButton.SetActive(false);
         
         //lobi id sini girdiğimiz lobi id sine eşitliyoruz
         CurrentLobbyID = callback.m_ulSteamIDLobby;
         //lobi adı görmek içim
-        LobbyNameText.gameObject.SetActive(true);
+        //LobbyNameText.gameObject.SetActive(true);
         //lobinin adını getiriyoruz
-        LobbyNameText.text = SteamMatchmaking.GetLobbyData(
+        /*LobbyNameText.text = SteamMatchmaking.GetLobbyData(
             new CSteamID(callback.m_ulSteamIDLobby ),
             "name"
-            );
+            );*/
         
         //Müşteriler için yapılması olan
         //önce müşteri olup olmadığını kontrol edelim
