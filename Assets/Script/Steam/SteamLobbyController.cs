@@ -45,6 +45,8 @@ public class SteamLobbyController : MonoBehaviour
     public Button StartGameButton;
     public Text ReadyButtonText;
 
+    public Text LobbyId;
+    
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -59,6 +61,8 @@ public class SteamLobbyController : MonoBehaviour
     {
         if (LocalPlayerController.Ready) ReadyButtonText.text = "Unready";
         else ReadyButtonText.text = "Ready";
+        
+        LobbyId.text = "" +CurrentLobbyID;
     }
 
     public void CheckIfAllReady()

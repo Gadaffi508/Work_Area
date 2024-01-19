@@ -27,7 +27,8 @@ public class SteamLobby : MonoBehaviour
     private const string HostAddressKey = "HostAddress";
     //ağ yöneticisine atıfta bulunmak
     private CustomNetworkManager cmanager;
-    
+
+    public InputField EnterIdField;
 
     private void Start()
     {
@@ -128,6 +129,24 @@ public class SteamLobby : MonoBehaviour
         //lobimize ev sahipliği yapıyoruz
         //İlk önce lobi türü daha sonra max insan sayısı
         SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, 4);
+    }
+
+    public void RequestJoin()
+    {
+        ulong idValue;
+
+        // Kullanıcının girdiği ID'nin uygunluğunu kontrol et
+        if (ulong.TryParse(EnterIdField.text, out idValue))
+        {
+            CSteamID ID = new CSteamID(idValue);
+            SteamMatchmaking.JoinLobby(ID);
+        }
+        else
+        {
+            Debug.LogError("Geçersiz Steam ID formatı");
+            // Hata durumunda kullanıcıya bilgi vermek için uygun bir mesaj gönderebilirsiniz
+        }
+        Debug.Log("Working");
     }
 }
 
