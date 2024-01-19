@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,6 +22,10 @@ public class SteamPlayerController : NetworkBehaviour
     [SyncVar(hook = nameof(PlayerNameUpdate))]
     public string PlayerName;
     
+    //Hazır olup olmadığını kontrol eden func
+    [SyncVar(hook = nameof(PlayerReadyUpdate))]
+    public bool Ready;
+    
     //Özel ağ yöneticisi referans
     private CustomNetworkManager manager;
 
@@ -35,6 +40,36 @@ public class SteamPlayerController : NetworkBehaviour
             
             return manager = CustomNetworkManager.singleton as CustomNetworkManager;
         }
+    }
+
+    private void Start()
+    {
+        DontDestroyOnLoad(this.gameObject);
+    }
+
+    public void PlayerReadyUpdate(bool oldValue, bool newValue)
+    {
+        if (isServer) // Host
+        {
+            this.Ready = newValue;
+        }
+        
+        if (isClient)// Client
+        {
+            SteamLobbyController.Instance.UpdatePlayerList();
+        }
+    }
+
+    [Command]
+    private void CMdSetPlayerReady()
+    {
+        this.PlayerReadyUpdate(this.Ready,!this.Ready);
+    }
+
+    public void ChangeReady()
+    {
+        //yetkimiz varmı kotnrol ediyoruz
+        if (authority) CMdSetPlayerReady();
     }
 
     public override void OnStartAuthority()
@@ -75,6 +110,23 @@ public class SteamPlayerController : NetworkBehaviour
         {
             SteamLobbyController.Instance.UpdatePlayerList();
         }
+    }
+    
+    //Start Game
+    public void CanStartGame(string SceneName)
+    {
+        //yetkimiz var mı kontrol ediyoruz
+        if (authority)
+        {
+            CmdStartGame(SceneName);
+        }
+    }
+    
+    //Bağlı olan her istemci de çalışıcak
+    [Command]
+    public void CmdStartGame(string SceneName)
+    {
+        manager.StartGame(SceneName);
     }
 }
 

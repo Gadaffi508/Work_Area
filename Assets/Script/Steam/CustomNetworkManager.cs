@@ -34,6 +34,12 @@ public class CustomNetworkManager : NetworkManager
             NetworkServer.AddPlayerForConnection(conn,GamePlayerInstance.gameObject);
         }
     }
+
+    public void StartGame(string SceneName)
+    {
+        //Sahne değiştirme
+        ServerChangeScene(SceneName);
+    }
 }
 
 

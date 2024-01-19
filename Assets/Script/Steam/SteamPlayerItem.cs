@@ -16,10 +16,29 @@ public class SteamPlayerItem : MonoBehaviour
     //Eklenmiş olan oyuncunun görüncek özellikleri
     public Text PlayerNameText;
     public RawImage PlayerIcon;
+    
+    //Player Ready
+    public Text PlayerReadyText;
+    public bool Ready;
 
     //Steam Avatar geri araması yani veri çekme
     protected Callback<AvatarImageLoaded_t> ImageLoaded;
 
+    public void ChangeReadyStatus()
+    {
+        //hazır durumunu değiştirme
+        if (Ready) 
+        {
+            PlayerReadyText.text = "Ready"; // Ready
+            PlayerReadyText.color = Color.green;
+        }
+        else 
+        {
+            PlayerReadyText.text = "UnReady"; //Not ready
+            PlayerReadyText.color = Color.red;
+        }
+    }
+    
     private void Start()
     {
         ImageLoaded = Callback<AvatarImageLoaded_t>.Create(OnImageLoaded);
@@ -29,6 +48,7 @@ public class SteamPlayerItem : MonoBehaviour
     public void SetPlayerValues()
     {
         PlayerNameText.text = PlayerName;
+        ChangeReadyStatus();
         //Resim gelipo gelmeme kontrol
         if (!AvatarReceived) GetPlayerIcon();
     }
