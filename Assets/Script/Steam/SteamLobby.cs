@@ -20,6 +20,13 @@ public class SteamLobby : MonoBehaviour
     //Oyun Lobisine girme
     protected Callback<LobbyEnter_t> LobbyEntered;
     
+    //Lobbies callback
+    protected Callback<LobbyMatchList_t> LobbyList; //lobileri arama
+    protected Callback<LobbyDataUpdate_t> LobbyDataUpdated; //lobileri güncelleme
+
+    public List<CSteamID> lobbyIDs = new List<CSteamID>();
+    
+    
     //Lobi oluştuğunda bir kimlik oluşcak
     //Bu ıd arkadaşlar katılma için kullancaz
     public ulong CurrentLobbyID;
@@ -29,7 +36,6 @@ public class SteamLobby : MonoBehaviour
     private CustomNetworkManager cmanager;
 
     public InputField EnterIdField;
-
     private void Start()
     {
         //Steamın çalışıp çalışmadığını kontrol ediyoruz
@@ -43,6 +49,9 @@ public class SteamLobby : MonoBehaviour
         LobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
         JoinRequest = Callback<GameLobbyJoinRequested_t>.Create(OnJoinRequest);
         LobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
+        
+        LobbyList = Callback<LobbyMatchList_t>.Create(OnGetLobbyList);
+        LobbyDataUpdated = Callback<LobbyDataUpdate_t>.Create(OnGetLobbyData);
     }
 
     //Lobi Oluşturma
@@ -147,6 +156,38 @@ public class SteamLobby : MonoBehaviour
             // Hata durumunda kullanıcıya bilgi vermek için uygun bir mesaj gönderebilirsiniz
         }
         Debug.Log("Working");
+    }
+
+    public void JoinLobby(CSteamID lobbyID)
+    {
+        SteamMatchmaking.JoinLobby(lobbyID);
+    }
+
+    public void GetLobbiesList()
+    {
+        //lobi temzileme
+        if(lobbyIDs.Count > 0) lobbyIDs.Clear();
+        //şimdi lobi arayacağız hangi lobi alcamızı istediğimiz paremetreye göre değişir onu biz belirliyoruz
+        //bu liste istek sayısı
+        SteamMatchmaking.AddRequestLobbyListResultCountFilter(60); //60 lobi döndürme
+        SteamMatchmaking.RequestLobbyList();
+    }
+    
+    private void OnGetLobbyList(LobbyMatchList_t result)
+    {
+        if(LobbiesListManager.Instance.listOfLobbies.Count > 0) LobbiesListManager.Instance.DestroyLobbies();
+        //Tüm listeye ulaşma
+        for (int i = 0; i < result.m_nLobbiesMatching; i++)
+        {
+            CSteamID lobbyId = SteamMatchmaking.GetLobbyByIndex(i);
+            lobbyIDs.Add(lobbyId);
+            SteamMatchmaking.RequestLobbyData(lobbyId);
+        }
+    }
+    
+    private void OnGetLobbyData(LobbyDataUpdate_t result)
+    {
+        LobbiesListManager.Instance.DisaplayLobbies(lobbyIDs,result);
     }
 }
 

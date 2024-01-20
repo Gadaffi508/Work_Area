@@ -9,8 +9,6 @@ using Random = UnityEngine.Random;
 public class PlayerController : NetworkBehaviour
 {
     public float Speed = 1;
-    public float ziplamaGucu = 10f;
-    public float yerCekimi = -30f;
     
     private CharacterController characterController;
     
@@ -40,38 +38,15 @@ public class PlayerController : NetworkBehaviour
 
     public void SetPosition()
     {
-        transform.position = new Vector3(Random.Range(-5, 5), 0.8f, Random.Range(-15, 7));
+        transform.position = new Vector3(Random.Range(-5, 5), 1, Random.Range(-15, 7));
     }
-    
+
     void HareketInputunuAl()
     {
         float yatay = Input.GetAxis("Horizontal");
         float dikey = Input.GetAxis("Vertical");
 
-        hareketYonu = (transform.forward * dikey) + (transform.right * yatay);
-
-        // Yerçekimini uygula
-        if (characterController.isGrounded)
-        {
-            dikeyHiz = -0.5f; // Yerdeyken dikey hız sıfırlanır
-            if (Input.GetButtonDown("Jump"))
-            {
-                dikeyHiz = ziplamaGucu;
-            }
-        }
-        else
-        {
-            dikeyHiz += yerCekimi * Time.deltaTime;
-        }
-
-        HareketEttir();
-    }
-
-    void HareketEttir()
-    {
-        Vector3 hareket = hareketYonu * Speed * Time.deltaTime;
-        hareket.y = dikeyHiz;
-
-        characterController.Move(hareket);
+        Vector3 movement = new Vector3(yatay, 0f, dikey) * Speed * Time.deltaTime;
+        transform.Translate(movement);
     }
 }

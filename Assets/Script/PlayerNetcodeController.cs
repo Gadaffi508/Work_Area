@@ -1,44 +1,56 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Mirror;
 using UnityEngine;
 
-public class PlayerNetcodeController : NetworkBehaviour
+public class PlayerNetcodeController : MonoBehaviour
 {
-    public float speed = 5f;
-    public float rotationSpeed = 45f;
+    public float Speed = 1;
+    public float ziplamaGucu = 10f;
+    public float yerCekimi = -30f;
     
-    private Animator anim;
-    private Rigidbody rb;
-    private Vector3 moveDir;
+    private CharacterController characterController;
+    
+    private Vector3 hareketYonu;
+    private float dikeyHiz;
 
     private void Start()
     {
-        anim = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody>();
+        characterController = GetComponent<CharacterController>(); 
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
-        Move();
+        HareketInputunuAl();
     }
-
-    private void Move()
+    
+    void HareketInputunuAl()
     {
-        if(isOwned) return;
-        
-        moveDir.x = Input.GetAxis("Horizontal");
-        moveDir.z = Input.GetAxis("Vertical");
-        
-        anim.SetFloat("speed", rb.velocity.magnitude);
-        
-        if (moveDir != Vector3.zero)
+        float yatay = Input.GetAxis("Horizontal");
+        float dikey = Input.GetAxis("Vertical");
+
+        hareketYonu = (transform.forward * dikey) + (transform.right * yatay);
+
+        // Yerçekimini uygula
+        if (characterController.isGrounded)
         {
-            Quaternion toRotation = Quaternion.LookRotation(moveDir, Vector3.up);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
+            dikeyHiz = -0.5f; // Yerdeyken dikey hız sıfırlanır
+            if (Input.GetButtonDown("Jump"))
+            {
+                dikeyHiz = ziplamaGucu;
+            }
         }
-       
-        rb.velocity = moveDir * speed * Time.deltaTime;
+        else
+        {
+            dikeyHiz += yerCekimi * Time.deltaTime;
+        }
+
+        HareketEttir();
+    }
+
+    void HareketEttir()
+    {
+        Vector3 hareket = hareketYonu * Speed * Time.deltaTime;
+        hareket.y = dikeyHiz;
+
+        characterController.Move(hareket);
     }
 }
