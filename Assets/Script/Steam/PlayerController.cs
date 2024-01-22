@@ -11,9 +11,9 @@ public class PlayerController : NetworkBehaviour
     public float Speed = 1;
     
     private CharacterController characterController;
-    
-    private Vector3 hareketYonu;
-    private float dikeyHiz;
+
+    [SyncVar]
+    private Vector3 movement;
     //Oyuncu objemiz
     public GameObject PlayerModel;
 
@@ -24,15 +24,19 @@ public class PlayerController : NetworkBehaviour
 
     private void Update()
     {
+        if (!authority) return;
+        
         if (SceneManager.GetActiveScene().name == "GameScene")
         {
             if (PlayerModel.activeSelf == false)
             {
                 SetPosition();
                 characterController = GetComponent<CharacterController>();
+                characterController.enabled = false;
                 PlayerModel.SetActive(true);
             }
-            if(authority) HareketInputunuAl();
+
+            CmdMove();
         }
     }
 
@@ -41,12 +45,19 @@ public class PlayerController : NetworkBehaviour
         transform.position = new Vector3(Random.Range(-5, 5), 1, Random.Range(-15, 7));
     }
 
-    void HareketInputunuAl()
+    [Command]
+    void CmdMove()
+    {
+        MoveInput();
+    }
+
+    [ClientRpc]
+    void MoveInput()
     {
         float yatay = Input.GetAxis("Horizontal");
         float dikey = Input.GetAxis("Vertical");
 
-        Vector3 movement = new Vector3(yatay, 0f, dikey) * Speed * Time.deltaTime;
+        movement = new Vector3(yatay, 0f, dikey) * Speed * Time.deltaTime;
         transform.Translate(movement);
     }
 }
