@@ -10,6 +10,7 @@ public class LobbyDataEntry : MonoBehaviour
     public CSteamID lobbyId;
     public string lobbyName;
     public Text lobbyNameText;
+    public Text MemebersText;
 
     public void SetLobbyData()
     {
@@ -19,6 +20,13 @@ public class LobbyDataEntry : MonoBehaviour
 
     public void JoinLobby()
     {
-        SteamLobby.Instance.JoinLobby(lobbyId);
+        if (SteamMatchmaking.GetNumLobbyMembers((CSteamID)lobbyId) == 1)
+        {
+            SteamLobby.Instance.JoinLobby(lobbyId);
+        }
+        else
+        {
+            Debug.Log("The Room is full");
+        }
     }
 }

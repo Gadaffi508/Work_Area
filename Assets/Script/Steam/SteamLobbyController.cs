@@ -136,7 +136,6 @@ public class SteamLobbyController : MonoBehaviour
             NewPlayerItemScript.PlayerSteamID = player.PlayerSteamId;
             NewPlayerItemScript.Ready = player.Ready;
             NewPlayerItemScript.SetPlayerValues();
-            
             NewPlayerItem.transform.SetParent(PlayerListViewContent.transform);
             NewPlayerItem.transform.localScale = Vector3.one;
             

@@ -194,6 +194,7 @@ public class SteamLobby : MonoBehaviour
     {
         SteamMatchmaking.LeaveLobby(new CSteamID(CurrentLobbyID));
         CurrentLobbyID = 0;
+        Debug.Log("Disconnected");
     }
 }
 

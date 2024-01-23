@@ -38,6 +38,8 @@ public class LobbiesListManager : MonoBehaviour
                 
                 //lobilere veri aktarma
                 createdItem.GetComponent<LobbyDataEntry>().lobbyId = (CSteamID)lobbyIds[i].m_SteamID;
+                
+                createdItem.GetComponent<LobbyDataEntry>().MemebersText.text = SteamMatchmaking.GetNumLobbyMembers((CSteamID)lobbyIds[i].m_SteamID).ToString();
 
                 createdItem.GetComponent<LobbyDataEntry>().lobbyName =
                     SteamMatchmaking.GetLobbyData((CSteamID)lobbyIds[i].m_SteamID, "name");
