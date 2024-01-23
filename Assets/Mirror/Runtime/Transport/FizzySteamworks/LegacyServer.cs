@@ -2,6 +2,7 @@
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using FishySteamworks;
 using UnityEngine;
 
 namespace Mirror.FizzySteam

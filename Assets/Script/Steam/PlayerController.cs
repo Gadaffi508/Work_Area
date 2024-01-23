@@ -24,8 +24,6 @@ public class PlayerController : NetworkBehaviour
 
     private void Update()
     {
-        if (!authority) return;
-        
         if (SceneManager.GetActiveScene().name == "GameScene")
         {
             if (PlayerModel.activeSelf == false)
@@ -35,8 +33,7 @@ public class PlayerController : NetworkBehaviour
                 characterController.enabled = false;
                 PlayerModel.SetActive(true);
             }
-
-            CmdMove();
+            if (authority) CmdMove();
         }
     }
 
