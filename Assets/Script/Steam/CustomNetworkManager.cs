@@ -34,11 +34,15 @@ public class CustomNetworkManager : NetworkManager
             NetworkServer.AddPlayerForConnection(conn,GamePlayerInstance.gameObject);
         }
     }
-
+    
     public void StartGame(string SceneName)
     {
         //Sahne değiştirme
         ServerChangeScene(SceneName);
+        if (SteamMatchmaking.GetNumLobbyMembers((CSteamID)SteamLobby.Instance.CurrentLobbyID) != 2)
+        {
+            Debug.Log("You are the only person in the match..");
+        }
     }
 }
 

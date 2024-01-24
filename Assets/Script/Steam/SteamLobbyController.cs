@@ -217,6 +217,14 @@ public class SteamLobbyController : MonoBehaviour
 
     public void StartGame(string SceneName)
     {
+        if (SteamMatchmaking.GetNumLobbyMembers((CSteamID)SteamLobby.Instance.CurrentLobbyID) == 2)
+        {
+            Debug.Log("Connection.");
+        }
+        else
+        {
+            Debug.Log("You need 1 person.");
+        }
         LocalPlayerController.CanStartGame(SceneName);
     }
 }
