@@ -8,6 +8,8 @@ using UnityEngine.UI;
 
 public class SteamLobbyManager : MonoBehaviour
 {
+    public static SteamLobbyManager Instance;
+    
     //callbacks
     protected Callback<LobbyCreated_t> lobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> joinRequest;
@@ -17,11 +19,13 @@ public class SteamLobbyManager : MonoBehaviour
     private MyNetworkManager _manager;
 
     public ulong CurrentLobbyID;
-    public Text LobbyName;
+    public GameObject lobbies;
+    public GameObject lobbyCreatedButton;
 
     private void Start()
     {
         if(!SteamManager.Initialized) return;
+        if (Instance == null) Instance = this;
         
         _manager = GetComponent<MyNetworkManager>();
         lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
@@ -34,7 +38,8 @@ public class SteamLobbyManager : MonoBehaviour
         if(callback.m_eResult != EResult.k_EResultOK) return;
         
         Debug.Log("Lobby created");
-        LobbyName.text = SteamFriends.GetPersonaName().ToString() + "'s Lobby";
+        lobbies.SetActive(true);
+        lobbyCreatedButton.SetActive(false);
         
         _manager.StartHost();
 
