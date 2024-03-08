@@ -45,29 +45,66 @@ public class SteamLobbyController : MonoBehaviour
     
     public void UpdatePlayerList()
     {
+        CreateHostPlayerItem();
+        CreateClientPlayerItem();
+        RemovePlayerItem();
+        UpdatePlayerItem();
+    }
+
+    public void CreateHostPlayerItem()
+    {
+        if (playerItemCreated) return;
+        
         foreach (SteamPlayerObject player in Manager.GamePlayer)
         {
-            Debug.Log(Manager.GamePlayer);
-            if (playerLıstItems.Any(item => item.ConnectionId == player.connectionID))
-                continue;
-
-            GameObject newPlayerItem = Instantiate(playerListItemPrefab, playerListViewContent.transform);
-            PlayerLıstItem newPlayerItemScript = newPlayerItem.GetComponent<PlayerLıstItem>();
-            
-            newPlayerItemScript.PlayerName = player.playerName;
-            newPlayerItemScript.ConnectionId = player.connectionID;
-            newPlayerItemScript.PlayerSteamID = player.playerSteamId;
-            newPlayerItemScript.SetPlayerValues();
-            
-            playerLıstItems.Add(newPlayerItemScript);
+            if (!playerLıstItems.Any(item => item.ConnectionId == player.connectionID))
+            {
+                CreatePlayerItem(player);
+            }
         }
-
-        List<PlayerLıstItem> playerItemsToRemove = playerLıstItems.Where(item => !Manager.GamePlayer.Any(player => player.connectionID == item.ConnectionId)).ToList();
-        foreach (PlayerLıstItem itemToRemove in playerItemsToRemove)
+        playerItemCreated = true;
+    }
+    
+    public void CreateClientPlayerItem()
+    {
+        foreach (SteamPlayerObject player in Manager.GamePlayer)
         {
-            playerLıstItems.Remove(itemToRemove);
+            if (!playerLıstItems.Any(item => item.ConnectionId == player.connectionID))
+            {
+                CreatePlayerItem(player);
+            }
         }
     }
+    
+    public void RemovePlayerItem()
+    {
+        playerLıstItems.RemoveAll(item => !Manager.GamePlayer.Any(player => player.connectionID == item.ConnectionId));
+    }
+    
+    public void UpdatePlayerItem()
+    {
+        foreach (PlayerLıstItem playerListItem in playerLıstItems)
+        {
+            SteamPlayerObject player = Manager.GamePlayer.Find(p => p.connectionID == playerListItem.ConnectionId);
+            if (player != null)
+            {
+                playerListItem.PlayerName = player.playerName;
+                playerListItem.SetPlayerValues();
+            }
+        }
+    }
+    
+    private void CreatePlayerItem(SteamPlayerObject player)
+    {
+        GameObject newPlayerItem = Instantiate(playerListItemPrefab, playerListViewContent.transform);
+        PlayerLıstItem newPlayerItemScript = newPlayerItem.GetComponent<PlayerLıstItem>();
+        newPlayerItemScript.PlayerName = player.playerName;
+        newPlayerItemScript.ConnectionId = player.connectionID;
+        newPlayerItemScript.PlayerSteamID = player.playerSteamId;
+        newPlayerItemScript.SetPlayerValues();
+        playerLıstItems.Add(newPlayerItemScript);
+    }
+    
     public void FindLocalPlayer()
     {
         localPlayerObject = GameObject.Find("LocalGamePlayer");
