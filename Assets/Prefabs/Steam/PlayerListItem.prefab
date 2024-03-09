@@ -86,6 +86,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9199685204320978278}
   - component: {fileID: 3639473040421720472}
+  - component: {fileID: 2078226018650856560}
   m_Layer: 5
   m_Name: PlayerListItem
   m_TagString: Untagged
@@ -133,6 +134,27 @@ MonoBehaviour:
   PlayerSteamID: 0
   PlayerNameText: {fileID: 9199685205578419218}
   PlayerIcon: {fileID: 9199685204954196845}
+--- !u!95 &2078226018650856560
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9199685204320978279}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ecbf7ebce741b3540bc03c12eaa0f04f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &9199685204954196847
 GameObject:
   m_ObjectHideFlags: 0
