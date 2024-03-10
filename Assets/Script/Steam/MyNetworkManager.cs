@@ -12,12 +12,13 @@ public class MyNetworkManager : NetworkManager
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         SteamPlayerObject gamePlayerInstance = Instantiate(gamePlayerPrefabs);
+
         gamePlayerInstance.connectionID = conn.connectionId;
         gamePlayerInstance.playerIdNumber = GamePlayer.Count + 1;
         gamePlayerInstance.playerSteamId =
-                (ulong)SteamMatchmaking.GetLobbyMemberByIndex((CSteamID)SteamLobbyManager.Instance.CurrentLobbyID,GamePlayer.Count);
+            (ulong)SteamMatchmaking.GetLobbyMemberByIndex((CSteamID)SteamLobbyManager.Instance.CurrentLobbyID,
+                GamePlayer.Count);
 
         NetworkServer.AddPlayerForConnection(conn, gamePlayerInstance.gameObject);
-        
     }
 }

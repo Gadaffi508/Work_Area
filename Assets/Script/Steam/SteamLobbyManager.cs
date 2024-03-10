@@ -9,7 +9,6 @@ using UnityEngine.UI;
 public class SteamLobbyManager : MonoBehaviour
 {
     public static SteamLobbyManager Instance;
-    
     //callbacks
     protected Callback<LobbyCreated_t> lobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> joinRequest;
@@ -26,7 +25,6 @@ public class SteamLobbyManager : MonoBehaviour
     {
         if(!SteamManager.Initialized) return;
         if (Instance == null) Instance = this;
-        
         _manager = GetComponent<MyNetworkManager>();
         lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
         joinRequest = Callback<GameLobbyJoinRequested_t>.Create(OnJoinRequest);

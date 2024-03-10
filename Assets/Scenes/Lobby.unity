@@ -179,7 +179,7 @@ MonoBehaviour:
     m_Top: 33
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 0
+  m_Spacing: 60
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
@@ -201,6 +201,56 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!1 &289335949
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 289335951}
+  - component: {fileID: 289335950}
+  m_Layer: 0
+  m_Name: LobbyController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &289335950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 289335949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e07ac13031eccc41a35d8dd7940a69a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  "playerL\u0131stItemViewContent": {fileID: 117918262}
+  "playerL\u0131stItemPrefab": {fileID: 6605123282260522066, guid: ea3e65965184ec94d86deac0099e0b4b, type: 3}
+  localPlayerObject: {fileID: 0}
+  currentLobbyID: 0
+  playerItemCreated: 0
+  localObject: {fileID: 0}
+--- !u!4 &289335951
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 289335949}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &464144061
 GameObject:
   m_ObjectHideFlags: 0
@@ -439,56 +489,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 0
---- !u!1 &696129081
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 696129083}
-  - component: {fileID: 696129082}
-  m_Layer: 0
-  m_Name: LobbyController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &696129082
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 696129081}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e07ac13031eccc41a35d8dd7940a69a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerListViewContent: {fileID: 117918262}
-  playerListItemPrefab: {fileID: 9199685204320978279, guid: 5bc1c680564d9f64099807ef50a572eb, type: 3}
-  localPlayerObject: {fileID: 0}
-  currentLobbyID: 0
-  playerItemCreated: 0
-  localPlayer: {fileID: 0}
---- !u!4 &696129083
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 696129081}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &710811777
 GameObject:
   m_ObjectHideFlags: 0
@@ -846,11 +846,11 @@ MonoBehaviour:
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
-  playerPrefab: {fileID: 615289672027702346, guid: 9f1ee4893bb5bba4b8a309c07a9f0582, type: 3}
+  playerPrefab: {fileID: 926349695426702066, guid: 9f1ee4893bb5bba4b8a309c07a9f0582, type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs:
-  - {fileID: 4800150691692048961, guid: 5680c698ec2f69542857341c9ba14a66, type: 3}
+  - {fileID: 2216797150008521481, guid: 027999e96df775e48acae7044054edcc, type: 3}
   exceptionsDisconnect: 0
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -866,7 +866,7 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
-  gamePlayerPrefabs: {fileID: 2786322336205323294, guid: 5680c698ec2f69542857341c9ba14a66, type: 3}
+  gamePlayerPrefabs: {fileID: 4630387328437282490, guid: 027999e96df775e48acae7044054edcc, type: 3}
   GamePlayer: []
 --- !u!4 &965985748
 Transform:
