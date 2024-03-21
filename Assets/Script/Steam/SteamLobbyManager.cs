@@ -75,24 +75,22 @@ public class SteamLobbyManager : MonoBehaviour
         SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, 4);
     }
 
-    public void JoinLobby(CSteamID lobbyId)
+    public void JoinLobby(CSteamID _lobbyID)
     {
-        SteamMatchmaking.JoinLobby(lobbyId);
+        SteamMatchmaking.JoinLobby(_lobbyID);
     }
 
-    public void MatchLobbies()
+    public void FindLobbies()
     {
-        if (lobbyID.Count > 0)
-        {
-            lobbyID.Clear();
-        }
+        if(lobbyID.Count>0) lobbyID.Clear();
+        
         SteamMatchmaking.AddRequestLobbyListResultCountFilter(10);
         SteamMatchmaking.RequestLobbyList();
     }
 
     private void MatchLobby(LobbyMatchList_t callback)
     {
-        if(MatchingLobby.Instance.lobbyList.Count > 0) MatchingLobby.Instance.ClearLobbies();
+        if (FindLobbyManager.Instance.lobbyList.Count>0) FindLobbyManager.Instance.ClearLobby();
 
         for (int i = 0; i < callback.m_nLobbiesMatching; i++)
         {
@@ -104,6 +102,6 @@ public class SteamLobbyManager : MonoBehaviour
 
     private void GetLobbyData(LobbyDataUpdate_t callback)
     {
-        MatchingLobby.Instance.DisplayLobby(lobbyID,callback);
+        FindLobbyManager.Instance.DisplayLobby(lobbyID,callback);
     }
 }
