@@ -21,4 +21,9 @@ public class MyNetworkManager : NetworkManager
 
         NetworkServer.AddPlayerForConnection(conn, gamePlayerInstance.gameObject);
     }
+
+    public void StartGame(string SceneName)
+    {
+        ServerChangeScene(SceneName);
+    }
 }

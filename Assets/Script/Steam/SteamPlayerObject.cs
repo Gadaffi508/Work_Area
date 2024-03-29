@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SteamPlayerObject : NetworkBehaviour
 {
+    [SyncVar] public GameObject playerModel;
+    
     [SyncVar] public int connectionID, playerIdNumber;
     [SyncVar] public ulong playerSteamId;
 
@@ -26,6 +28,7 @@ public class SteamPlayerObject : NetworkBehaviour
 
     public override void OnStartAuthority()
     {
+        DontDestroyOnLoad(this);
         SetPlayerName(SteamFriends.GetPersonaName().ToString());
         gameObject.name = "LocalGamePlayer";
         SteamLobbyController.Instance.FindLocalPlayer();
@@ -61,5 +64,17 @@ public class SteamPlayerObject : NetworkBehaviour
         {
             SteamLobbyController.Instance.UpdatePlayerLıst();
         }
+    }
+
+    public void CanStartGame(string SceneName)
+    {
+        if(authority) CmdStartGame(SceneName);
+    }
+    
+    [Command]
+    public void CmdStartGame(string SceneName)
+    {
+        _manager.StartGame(SceneName);
+        playerModel.SetActive(true);
     }
 }
