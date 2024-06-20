@@ -116,8 +116,8 @@ public class SteamLobbyController : MonoBehaviour
         localObject = localPlayerObject.GetComponent<SteamPlayerObject>();
     }
 
-    public void StartGame(string SceneName)
+    public void StartGame(string sceneName)
     {
-        localObject.CanStartGame(SceneName);
+        localObject.CanStartGame(sceneName);
     }
 }

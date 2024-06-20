@@ -48,7 +48,7 @@ public class SteamPlayerObject : NetworkBehaviour
     }
 
     [Command]
-    private void SetPlayerName(string _playerName)
+    void SetPlayerName(string _playerName)
     {
         this.PlayerNameUpdate(this.playerName,_playerName);
     }
@@ -66,15 +66,16 @@ public class SteamPlayerObject : NetworkBehaviour
         }
     }
 
-    public void CanStartGame(string SceneName)
+    public void CanStartGame(string sceneName)
     {
-        if(authority) CmdStartGame(SceneName);
+        if (authority) CmdStartGame(sceneName);
     }
-    
+
     [Command]
-    public void CmdStartGame(string SceneName)
+    void CmdStartGame(string sceneName)
     {
-        _manager.StartGame(SceneName);
+        _manager.StartGame(sceneName);
+        
         playerModel.SetActive(true);
     }
 }

@@ -9,43 +9,44 @@ public class SteamPlayerController : NetworkBehaviour
     public float speed;
     public float rotationSpeed;
 
-    private float X, Z;
+    private float _X, _Y;
     private Vector3 _movement;
-    
-    private Rigidbody _rigidbody;
+
+    private Rigidbody _rb;
     private Animator _animator;
 
     private void Start()
     {
-        _rigidbody = GetComponent<Rigidbody>();
+        _rb = GetComponent<Rigidbody>();
+
         _animator = GetComponentInChildren<Animator>();
     }
 
     private void Update()
     {
         if(!isLocalPlayer) return;
+
+        _X = Input.GetAxis("Horizontal");
+        _Y = Input.GetAxis("Vertical");
         
-        X = Input.GetAxis("Horizontal");
-        Z = Input.GetAxis("Vertical");
-        _animator.SetFloat("speed",_rigidbody.velocity.magnitude);
+        _animator.SetFloat("speed",_rb.velocity.magnitude);
         
-        CmdMove(X,Z);
+        CmdMove(_X,_Y);
     }
-    
+
     [Command]
-    private void CmdMove(float x, float y) => RpcMove(x,y);
+    void CmdMove(float x, float y) => RpcMove(x,y);
 
     [ClientRpc]
-    private void RpcMove(float x, float y)
+    void RpcMove(float x, float y)
     {
-        Vector3 direction = new Vector3(x,0,y).normalized;
+        Vector3 dir = new Vector3(x, 0, y).normalized;
+
+        _rb.velocity = dir * speed * Time.deltaTime;
         
-        if (direction != Vector3.zero)
-        {
-            Quaternion lookRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
-        }
+        if (dir == Vector3.zero) return;
         
-        _rigidbody.velocity = direction * speed * Time.deltaTime;
+        Quaternion lookDir = Quaternion.LookRotation(dir);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookDir, rotationSpeed * Time.deltaTime);
     }
 }
