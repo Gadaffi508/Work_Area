@@ -23,7 +23,6 @@ public class SteamLobbyManager : MonoBehaviour
     private MyNetworkManager _manager;
 
     public ulong CurrentLobbyID;
-    public GameObject lobbies;
 
     private void Start()
     {
@@ -44,14 +43,15 @@ public class SteamLobbyManager : MonoBehaviour
         if(callback.m_eResult != EResult.k_EResultOK) return;
         
         Debug.Log("Lobby created");
-        lobbies.SetActive(true);
         
         _manager.StartHost();
 
-        SteamMatchmaking.SetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), "HostAddress",
+        CSteamID ulSteamID = new CSteamID(callback.m_ulSteamIDLobby);
+
+        SteamMatchmaking.SetLobbyData(ulSteamID, "HostAddress",
             SteamUser.GetSteamID().ToString());
         
-        SteamMatchmaking.SetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), "name",
+        SteamMatchmaking.SetLobbyData(ulSteamID, "name",
             SteamFriends.GetPersonaName().ToString());
     }
 
@@ -66,7 +66,11 @@ public class SteamLobbyManager : MonoBehaviour
         CurrentLobbyID = callback.m_ulSteamIDLobby;
         if(NetworkServer.active) return;
 
-        _manager.networkAddress = SteamMatchmaking.GetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), "HostAddress");
+        CSteamID ulSteamID = new CSteamID(callback.m_ulSteamIDLobby);
+        
+        Debug.Log("Newtork Adress : ------------------" + _manager.networkAddress);
+        
+        _manager.networkAddress = SteamMatchmaking.GetLobbyData(ulSteamID, "HostAddress");
         _manager.StartClient();
     }
 
@@ -78,6 +82,11 @@ public class SteamLobbyManager : MonoBehaviour
     public void JoinLobby(CSteamID _lobbyID)
     {
         SteamMatchmaking.JoinLobby(_lobbyID);
+    }
+
+    public void LeaveLobby(CSteamID _lobbyID)
+    {
+        SteamMatchmaking.LeaveLobby(_lobbyID);
     }
 
     public void FindLobbies()

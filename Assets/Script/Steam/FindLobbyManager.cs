@@ -18,11 +18,11 @@ public class FindLobbyManager : MonoBehaviour
         SteamLobbyManager.Instance.FindLobbies();
     }
 
-    public void DisplayLobby(List<CSteamID> lobbyID, LobbyDataUpdate_t resul)
+    public void DisplayLobby(List<CSteamID> lobbyID, LobbyDataUpdate_t result)
     {
         for (int i = 0; i < lobbyID.Count; i++)
         {
-            if (lobbyID[i].m_SteamID == resul.m_ulSteamIDLobby)
+            if (lobbyID[i].m_SteamID == result.m_ulSteamIDLobby)
             {
                 GameObject lobby = Instantiate(lobbyDataPrefab, lobbiesMenuContent);
                 LobbyData data = lobby.GetComponent<LobbyData>();

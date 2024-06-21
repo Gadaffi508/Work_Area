@@ -1399,7 +1399,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lobbyID: []
   CurrentLobbyID: 0
-  lobbies: {fileID: 2080748118}
 --- !u!1 &968892886
 GameObject:
   m_ObjectHideFlags: 0
@@ -1597,8 +1596,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 965985749}
-        m_TargetAssemblyTypeName: SteamLobbyManager, Assembly-CSharp
+      - m_Target: {fileID: 289335950}
+        m_TargetAssemblyTypeName: SteamLobbyController, Assembly-CSharp
         m_MethodName: HostLobby
         m_Mode: 1
         m_Arguments:

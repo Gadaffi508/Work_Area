@@ -33,6 +33,11 @@ public class SteamLobbyController : MonoBehaviour
 
     #endregion
 
+    public void HostLobby()
+    {
+        SteamLobbyManager.Instance.HostLobby();
+    }
+
     public void UpdateLobbyName()
     {
         currentLobbyID = Manager.GetComponent<SteamLobbyManager>().CurrentLobbyID;
@@ -52,7 +57,7 @@ public class SteamLobbyController : MonoBehaviour
     {
         if(playerItemCreated) return;
 
-        foreach (SteamPlayerObject player in Manager.GamePlayer)
+        foreach (SteamPlayerObject player in _manager.GamePlayer)
         {
             if (!_playerLıstItems.Any(ıtem => ıtem.connectionID == player.connectionID))
             {
@@ -65,7 +70,7 @@ public class SteamLobbyController : MonoBehaviour
 
     public void CreateClientPlayerItem()
     {
-        foreach (SteamPlayerObject player in Manager.GamePlayer)
+        foreach (SteamPlayerObject player in _manager.GamePlayer)
         {
             if (!_playerLıstItems.Any(item => item.connectionID == player.connectionID))
             {
@@ -76,14 +81,14 @@ public class SteamLobbyController : MonoBehaviour
     
     public void RemovePlayerItem()
     {
-        _playerLıstItems.RemoveAll(item => !Manager.GamePlayer.Any(player => player.connectionID == item.connectionID));
+        _playerLıstItems.RemoveAll(item => !_manager.GamePlayer.Any(player => player.connectionID == item.connectionID));
     }
 
     public void UpdatePlayerItem()
     {
         foreach (SteamPlayerLıstItem playerLıst in _playerLıstItems)
         {
-            SteamPlayerObject player = Manager.GamePlayer.Find(p => p.connectionID == playerLıst.connectionID);
+            SteamPlayerObject player = _manager.GamePlayer.Find(p => p.connectionID == playerLıst.connectionID);
 
             foreach (SteamPlayerLıstItem playerLıstıtem in _playerLıstItems)
             {
