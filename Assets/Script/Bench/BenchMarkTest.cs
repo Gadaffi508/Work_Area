@@ -1,23 +1,27 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BenchMarkTest : MonoBehaviour
 {
-    [SerializeField] private Transform enemy;
+    private SpriteRenderer[] _spriteRenderers;
+    private Material[] _materials;
 
-    private Animator _anim;
-
-    private int _attackTrigger = Animator.StringToHash("attack");
-
+    private int _tintColor = Shader.PropertyToID("_TintColor");
     void Start()
     {
-        _anim = enemy.gameObject.GetComponent<Animator>();
+        _materials = new Material[_spriteRenderers.Length];
+
+        for (int i = 0; i < _spriteRenderers.Length; i++)
+        {
+            _materials[i] = _spriteRenderers[i].material;
+        }
     }
 
     void PerformBenchmarkTest()
     {
-        _anim.SetTrigger(_attackTrigger);
+        for (int i = 0; i < _materials.Length; i++)
+        {
+            _materials[i].SetColor(_tintColor, Color.red);
+        }
     }
 }

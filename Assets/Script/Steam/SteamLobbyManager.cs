@@ -17,6 +17,9 @@ public class SteamLobbyManager : MonoBehaviour
     protected Callback<LobbyMatchList_t> lobbyList;
     protected Callback<LobbyDataUpdate_t> lobbyData;
 
+    protected Callback<LobbyChatMsg_t> chatMessage;
+    protected Callback<LobbyChatUpdate_t> chatUpdate;
+
     public List<CSteamID> lobbyID = new List<CSteamID>();
     
     //manager
@@ -76,7 +79,7 @@ public class SteamLobbyManager : MonoBehaviour
 
     public void HostLobby()
     {
-        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, 4);
+        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, 10);
     }
 
     public void JoinLobby(CSteamID _lobbyID)
@@ -93,7 +96,7 @@ public class SteamLobbyManager : MonoBehaviour
     {
         if(lobbyID.Count>0) lobbyID.Clear();
         
-        SteamMatchmaking.AddRequestLobbyListResultCountFilter(10);
+        SteamMatchmaking.AddRequestLobbyListResultCountFilter(60);
         SteamMatchmaking.RequestLobbyList();
     }
 
@@ -107,6 +110,16 @@ public class SteamLobbyManager : MonoBehaviour
             lobbyID.Add(lobbyId);
             SteamMatchmaking.RequestLobbyData(lobbyId);
         }
+    }
+
+    private void ChatMessage(LobbyChatMsg_t callback)
+    {
+        
+    }
+
+    private void ChatUpdate(LobbyChatUpdate_t callback)
+    {
+        
     }
 
     private void GetLobbyData(LobbyDataUpdate_t callback)
