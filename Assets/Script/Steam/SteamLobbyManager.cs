@@ -16,9 +16,8 @@ public class SteamLobbyManager : MonoBehaviour
 
     protected Callback<LobbyMatchList_t> lobbyList;
     protected Callback<LobbyDataUpdate_t> lobbyData;
-
-    protected Callback<LobbyChatMsg_t> chatMessage;
-    protected Callback<LobbyChatUpdate_t> chatUpdate;
+    
+    private Callback<LobbyChatMsg_t> lobbyChatMsg;
 
     public List<CSteamID> lobbyID = new List<CSteamID>();
     
@@ -39,6 +38,8 @@ public class SteamLobbyManager : MonoBehaviour
 
         lobbyList = Callback<LobbyMatchList_t>.Create(MatchLobby);
         lobbyData = Callback<LobbyDataUpdate_t>.Create(GetLobbyData);
+        
+        lobbyChatMsg = Callback<LobbyChatMsg_t>.Create(OnLobbyChatMessage);
     }
 
     private void OnLobbyCreated(LobbyCreated_t callback)
@@ -112,14 +113,18 @@ public class SteamLobbyManager : MonoBehaviour
         }
     }
 
-    private void ChatMessage(LobbyChatMsg_t callback)
+    private void OnLobbyChatMessage(LobbyChatMsg_t callback)
     {
-        
-    }
+        byte[] data = new byte[4096];
+        int dataSize;
+        CSteamID steamIDUser;
+        EChatEntryType chatEntryType = EChatEntryType.k_EChatEntryTypeChatMsg;
 
-    private void ChatUpdate(LobbyChatUpdate_t callback)
-    {
-        
+        SteamMatchmaking.GetLobbyChatEntry((CSteamID)callback.m_ulSteamIDLobby, (int)callback.m_iChatID, out steamIDUser, data, data.Length, out chatEntryType);
+
+        string message = System.Text.Encoding.UTF8.GetString(data);
+
+        SteamChatManager.Instance.DisplayChatMessage(SteamFriends.GetFriendPersonaName(steamIDUser), message);
     }
 
     private void GetLobbyData(LobbyDataUpdate_t callback)
