@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Steamworks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,7 +9,7 @@ public class SteamLeaveGame : MonoBehaviour
 {
     public int sceneID;
 
-    public CSteamID lobbyID ;
+    public CSteamID lobbyID;
     
     #region Singleton
 
@@ -23,7 +25,7 @@ public class SteamLeaveGame : MonoBehaviour
 
     #endregion
 
-    void OnEnable()
+    void Start()
     {
         lobbyID = (CSteamID)SteamLobbyManager.Instance.CurrentLobbyID;
     }
@@ -31,15 +33,16 @@ public class SteamLeaveGame : MonoBehaviour
     public void LeaveGame()
     {
         if(lobbyID != (CSteamID)0)
-            SteamLobbyManager.Instance.LeaveLobby(lobbyID);
+            SteamLobbyManager.Instance.LeaveGame(lobbyID);
         else
-            Debug.Log("Looby ID : " + lobbyID);
+            Debug.Log("Lobby ID : " + lobbyID);
         
         Manager.StopHost();
 
-        Manager.networkAddress = "";
-        Manager.StopClient();
+        Manager.networkAddress = "HostAddress";
         
+        Manager.StopClient();
+
         SceneManager.LoadScene(sceneID);
     }
 }
