@@ -20,7 +20,7 @@ public class MyNetworkManager : NetworkManager
 
     public void StartGame(string sceneName)
     {
-        ServerChangeScene(sceneName);    
+        ServerChangeScene(sceneName);
     }
 
     public void InstatePlayer()

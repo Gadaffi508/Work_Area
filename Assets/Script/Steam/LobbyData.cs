@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Steamworks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,5 +22,6 @@ public class LobbyData : MonoBehaviour
     public void JoinLobby()
     {
         SteamLobbyManager.Instance.JoinLobby(lobbyID);
+        SteamChatManager.Instance.OpenChat();
     }
 }

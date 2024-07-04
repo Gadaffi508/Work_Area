@@ -1,3 +1,4 @@
+using System;
 using Steamworks;
 using Mirror;
 using UnityEngine;
@@ -5,7 +6,7 @@ using UnityEngine;
 public class SteamPlayerObject : NetworkBehaviour
 {
     [SyncVar] public GameObject playerModel;
-    
+
     [SyncVar] public int connectionID, playerIdNumber;
     [SyncVar] public ulong playerSteamId;
 
@@ -15,6 +16,7 @@ public class SteamPlayerObject : NetworkBehaviour
     #region Singleton
 
     private MyNetworkManager _manager;
+
     private MyNetworkManager Manager
     {
         get
@@ -25,6 +27,17 @@ public class SteamPlayerObject : NetworkBehaviour
     }
 
     #endregion
+
+    public int pingInMS;
+
+    private float NetworkPing => (float)NetworkTime.rtt;
+
+    void Update()
+    {
+        if(!NetworkClient.isConnected) return;
+
+        pingInMS = Mathf.RoundToInt(NetworkPing * 1000);
+    }
 
     public override void OnStartAuthority()
     {
@@ -50,9 +63,9 @@ public class SteamPlayerObject : NetworkBehaviour
     [Command]
     void SetPlayerName(string _playerName)
     {
-        this.PlayerNameUpdate(this.playerName,_playerName);
+        this.PlayerNameUpdate(this.playerName, _playerName);
     }
-    
+
     public void PlayerNameUpdate(string oldValue, string newValue)
     {
         if (isServer)
@@ -75,7 +88,7 @@ public class SteamPlayerObject : NetworkBehaviour
     void CmdStartGame(string sceneName)
     {
         _manager.StartGame(sceneName);
-        
+
         playerModel.SetActive(true);
     }
 }

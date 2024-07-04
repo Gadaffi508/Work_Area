@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using Steamworks;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class SteamChatManager : MonoBehaviour
@@ -53,5 +51,11 @@ public class SteamChatManager : MonoBehaviour
             Destroy(textList[0]);
             textList.RemoveAt(0);
         }
+    }
+
+    public void OpenChat()
+    {
+        if(chatMessage.gameObject.activeSelf is false)
+            chatMessage.gameObject.SetActive(true);
     }
 }
