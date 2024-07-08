@@ -13,6 +13,9 @@ public class SteamPlayerObject : NetworkBehaviour
     [SyncVar(hook = nameof(PlayerNameUpdate))]
     public string playerName;
 
+    private Transform _camera;
+    
+
     #region Singleton
 
     private MyNetworkManager _manager;
@@ -32,6 +35,11 @@ public class SteamPlayerObject : NetworkBehaviour
 
     private float NetworkPing => (float)NetworkTime.rtt;
 
+    private void Awake()
+    {
+        _camera = Camera.main.transform;
+    }
+
     void Update()
     {
         if(!NetworkClient.isConnected) return;
@@ -43,6 +51,11 @@ public class SteamPlayerObject : NetworkBehaviour
     {
         DontDestroyOnLoad(this);
         SetPlayerName(SteamFriends.GetPersonaName().ToString());
+        
+        _camera.rotation = Quaternion.LookRotation(Vector3.back);
+        _camera.SetParent(transform);
+        _camera.position = new Vector3(0,1.6f,3.67f);
+        
         gameObject.name = "LocalGamePlayer";
         SteamLobbyController.Instance.FindLocalPlayer();
         SteamLobbyController.Instance.UpdateLobbyName();
@@ -64,24 +77,20 @@ public class SteamPlayerObject : NetworkBehaviour
     void SetPlayerName(string _playerName)
     {
         this.PlayerNameUpdate(this.playerName, _playerName);
+        SteamLobbyController.Instance.UpdatePlayerLıst();
     }
 
     public void PlayerNameUpdate(string oldValue, string newValue)
     {
-        if (isServer)
+        if (isOwned || authority || isLocalPlayer)
         {
             this.playerName = newValue;
-        }
-
-        if (isClient)
-        {
-            SteamLobbyController.Instance.UpdatePlayerLıst();
         }
     }
 
     public void CanStartGame(string sceneName)
     {
-        if (authority) CmdStartGame(sceneName);
+        CmdStartGame(sceneName);
     }
 
     [Command]

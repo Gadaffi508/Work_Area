@@ -24,7 +24,7 @@ public class SteamPlayerController : NetworkBehaviour
 
     private void Update()
     {
-        if(!isLocalPlayer) return;
+        if(!isOwned || !authority) return;
 
         _X = Input.GetAxis("Horizontal");
         _Y = Input.GetAxis("Vertical");
