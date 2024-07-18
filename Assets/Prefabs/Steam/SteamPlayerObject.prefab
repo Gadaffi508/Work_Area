@@ -584,6 +584,7 @@ MonoBehaviour:
   playerIdNumber: 0
   playerSteamId: 0
   playerName: 
+  pingInMS: 0
 --- !u!114 &203615620127306091
 MonoBehaviour:
   m_ObjectHideFlags: 0
