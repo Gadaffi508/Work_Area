@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 public class SteamScoreBoardManager : MonoBehaviour
@@ -14,7 +15,7 @@ public class SteamScoreBoardManager : MonoBehaviour
         get
         {
             if (_manager != null) return _manager;
-            return _manager = MyNetworkManager.singleton as MyNetworkManager;
+            return _manager = NetworkManager.singleton as MyNetworkManager;
         }
     }
 

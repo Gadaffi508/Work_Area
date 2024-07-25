@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 using Steamworks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,7 +20,7 @@ public class SteamLeaveGame : MonoBehaviour
         get
         {
             if (_manager != null) return _manager;
-            return _manager = MyNetworkManager.singleton as MyNetworkManager;
+            return _manager = NetworkManager.singleton as MyNetworkManager;
         }
     }
 

@@ -27,7 +27,7 @@ public class SteamLobbyController : MonoBehaviour
         get
         {
             if (_manager != null) return _manager;
-            return _manager = MyNetworkManager.singleton as MyNetworkManager;
+            return _manager = NetworkManager.singleton as MyNetworkManager;
         }
     }
 
@@ -45,10 +45,10 @@ public class SteamLobbyController : MonoBehaviour
 
     public void UpdatePlayerLıst()
     {
-        CreateHostPlayerItem();
-        CreateClientPlayerItem();
-        RemovePlayerItem();
-        UpdatePlayerItem();
+        if (!playerItemCreated) CreateHostPlayerItem();
+        if (_playerLıstItems.Count < Manager.GamePlayer.Count) CreateClientPlayerItem();
+        if (_playerLıstItems.Count > Manager.GamePlayer.Count) RemovePlayerItem();
+        if (_playerLıstItems.Count == Manager.GamePlayer.Count) UpdatePlayerItem();
     }
 
     #region UpdatePlayerFunc
@@ -56,13 +56,17 @@ public class SteamLobbyController : MonoBehaviour
     public void CreateHostPlayerItem()
     {
         if(playerItemCreated) return;
-
-        foreach (SteamPlayerObject player in _manager.GamePlayer)
+        
+        foreach (SteamPlayerObject player in Manager.GamePlayer)
         {
-            if (!_playerLıstItems.Any(ıtem => ıtem.connectionID == player.connectionID))
-            {
-                CreatePlayerItem(player);
-            }
+            GameObject newPlayerItem = Instantiate(playerLıstItemPrefab, playerLıstItemViewContent.transform);
+            SteamPlayerLıstItem newPlayerItemst = newPlayerItem.GetComponent<SteamPlayerLıstItem>();
+            newPlayerItemst.playerName = player.playerName;
+            newPlayerItemst.connectionID = player.connectionID;
+            newPlayerItemst.playerSteamID = player.playerSteamId;
+            newPlayerItemst.SetPlayerValues();
+        
+            _playerLıstItems.Add(newPlayerItemst);
         }
 
         playerItemCreated = true;
@@ -74,7 +78,14 @@ public class SteamLobbyController : MonoBehaviour
         {
             if (!_playerLıstItems.Any(item => item.connectionID == player.connectionID))
             {
-                CreatePlayerItem(player);
+                GameObject newPlayerItem = Instantiate(playerLıstItemPrefab, playerLıstItemViewContent.transform);
+                SteamPlayerLıstItem newPlayerItemst = newPlayerItem.GetComponent<SteamPlayerLıstItem>();
+                newPlayerItemst.playerName = player.playerName;
+                newPlayerItemst.connectionID = player.connectionID;
+                newPlayerItemst.playerSteamID = player.playerSteamId;
+                newPlayerItemst.SetPlayerValues();
+        
+                _playerLıstItems.Add(newPlayerItemst);
             }
         }
     }
@@ -99,18 +110,6 @@ public class SteamLobbyController : MonoBehaviour
                 }
             }
         }
-    }
-    
-    private void CreatePlayerItem(SteamPlayerObject player)
-    {
-        GameObject newPlayerItem = Instantiate(playerLıstItemPrefab, playerLıstItemViewContent.transform);
-        SteamPlayerLıstItem newPlayerItemst = newPlayerItem.GetComponent<SteamPlayerLıstItem>();
-        newPlayerItemst.playerName = player.playerName;
-        newPlayerItemst.connectionID = player.connectionID;
-        newPlayerItemst.playerSteamID = player.playerSteamId;
-        newPlayerItemst.SetPlayerValues();
-        
-        _playerLıstItems.Add(newPlayerItemst);
     }
 
     #endregion

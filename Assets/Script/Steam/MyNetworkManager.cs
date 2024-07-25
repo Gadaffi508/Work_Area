@@ -9,26 +9,7 @@ public class MyNetworkManager : NetworkManager
     public SteamPlayerObject gamePlayerPrefabs;
     public List<SteamPlayerObject> GamePlayer = new List<SteamPlayerObject>();
 
-    private NetworkConnectionToClient _conn;
-
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
-    {
-        _conn = conn;
-
-        InstatePlayer();
-    }
-
-    public void StartGame(string sceneName)
-    {
-        ServerChangeScene(sceneName);
-    }
-
-    public void InstatePlayer()
-    {
-        NetworkServer.AddPlayerForConnection(_conn, Player(_conn));
-    }
-
-    GameObject Player(NetworkConnectionToClient conn)
     {
         SteamPlayerObject gamePlayerInstance = Instantiate(gamePlayerPrefabs);
         
@@ -38,7 +19,12 @@ public class MyNetworkManager : NetworkManager
         CSteamID _currentLobbID = (CSteamID)SteamLobbyManager.Instance.CurrentLobbyID;
         gamePlayerInstance.playerSteamId =
             (ulong)SteamMatchmaking.GetLobbyMemberByIndex(_currentLobbID, GamePlayer.Count);
+        
+        NetworkServer.AddPlayerForConnection(conn,gamePlayerInstance.gameObject );
+    }
 
-        return gamePlayerInstance.gameObject;
+    public void StartGame(string sceneName)
+    {
+        ServerChangeScene(sceneName);
     }
 }

@@ -24,7 +24,7 @@ public class SteamPlayerController : NetworkBehaviour
 
     private void Update()
     {
-        if(!isOwned || !authority) return;
+        if(!isLocalPlayer) return;
 
         _X = Input.GetAxis("Horizontal");
         _Y = Input.GetAxis("Vertical");
@@ -40,13 +40,22 @@ public class SteamPlayerController : NetworkBehaviour
     [ClientRpc]
     void RpcMove(float x, float y)
     {
-        Vector3 dir = new Vector3(x, 0, y).normalized;
+        Vector3 direction = new Vector3(x, 0, y).normalized;
 
-        _rb.velocity = dir * speed * Time.deltaTime;
+        Vector3 cameraForward = Camera.main.transform.forward;
+
+        cameraForward.y = 0f;
+
+        Vector3 moveDirection = cameraForward * direction.z + Camera.main.transform.right * direction.x;
+
+        Vector3 dir = new Vector3(moveDirection.x * speed * Time.deltaTime, _rb.velocity.y,
+            moveDirection.z * speed * Time.deltaTime);
+
+        _rb.velocity = dir;
         
         if (dir == Vector3.zero) return;
         
-        Quaternion lookDir = Quaternion.LookRotation(dir);
+        Quaternion lookDir = Quaternion.LookRotation(moveDirection);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookDir, rotationSpeed * Time.deltaTime);
     }
 }

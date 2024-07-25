@@ -6,6 +6,7 @@ using UnityEngine;
 public class SteamPlayerObject : NetworkBehaviour
 {
     [SyncVar] public GameObject playerModel;
+    [SyncVar] public GameObject playerCamera;
 
     [SyncVar] public int connectionID, playerIdNumber;
     [SyncVar] public ulong playerSteamId;
@@ -25,7 +26,7 @@ public class SteamPlayerObject : NetworkBehaviour
         get
         {
             if (_manager != null) return _manager;
-            return _manager = MyNetworkManager.singleton as MyNetworkManager;
+            return _manager = NetworkManager.singleton as MyNetworkManager;
         }
     }
 
@@ -71,6 +72,7 @@ public class SteamPlayerObject : NetworkBehaviour
     public override void OnStopClient()
     {
         Manager.GamePlayer.Remove(this);
+        SteamLobbyController.Instance.UpdatePlayerLıst();
     }
 
     [Command]
@@ -82,9 +84,13 @@ public class SteamPlayerObject : NetworkBehaviour
 
     public void PlayerNameUpdate(string oldValue, string newValue)
     {
-        if (isOwned || authority || isLocalPlayer)
+        if (isServer)
         {
             this.playerName = newValue;
+        }
+        if(isClient)
+        {
+            SteamLobbyController.Instance.UpdatePlayerLıst();
         }
     }
 
@@ -97,7 +103,10 @@ public class SteamPlayerObject : NetworkBehaviour
     void CmdStartGame(string sceneName)
     {
         _manager.StartGame(sceneName);
+        
+        if(!isLocalPlayer) return;
 
+        playerCamera.SetActive(true);
         playerModel.SetActive(true);
     }
 }
