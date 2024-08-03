@@ -39,7 +39,7 @@ public class EmptyState : CharacterState
     }
 }
 
-public class IdleState : CharacterState
+public partial class IdleState : CharacterState
 {
     public IdleState()
     {
@@ -59,7 +59,7 @@ public class IdleState : CharacterState
     }
 }
 
-public class JumpingState : CharacterState
+public partial class JumpingState : CharacterState
 {
     public JumpingState()
     {
