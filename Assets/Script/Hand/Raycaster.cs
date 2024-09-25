@@ -29,5 +29,10 @@ namespace Script.Steam
                                 
                                 
                     }
+
+                    public Vector3 HandScreenPos(Vector3 pos)
+                    {
+                                return _camera.WorldToScreenPoint(pos);
+                    }
         }
 }
